@@ -8,21 +8,24 @@ import { io } from "socket.io-client";
 function App() {
   const [username, setUsername] = useState("");
   const [user, setUser] = useState("");
+  //because we are gonna use socket in navbar also , let's make useState
+  const [socket, setSocket] = useState(io("http://localhost:5000"));
 
-  console.log(user);
+  // useEffect(() => {
+  //   setSocket(io("http://localhost:5000"));
+  // }, []);
 
   useEffect(() => {
-    const socket = io("http://localhost:5000");
-    console.log(socket);
-  }, []);
+    socket?.emit("newUser", user);
+  }, [socket, user]);
 
   return (
     <div className="container">
       {user ? (
         <>
-          <Navbar />
+          <Navbar socket={socket} />
           {posts.map((post) => (
-            <Card key={post.id} post={post} />
+            <Card key={post.id} post={post} socket={socket} user={user} />
           ))}
 
           <span className="username">{user}</span>
